@@ -2,8 +2,20 @@
 
 const BASE_URL = "https://api.themoviedb.org/3";
 
-export default async function Home() {
-  const url = `${BASE_URL}/trending/all/week?api_key=${process.env.TMDB_API_KEY}&language=en-US`;
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: { genre?: string };
+}) {
+  const genrePath =
+    searchParams.genre === "topRated"
+      ? "/movie/top_rated"
+      : "/trending/all/week";
+  const title =
+    searchParams.genre === "topRated"
+      ? "Top Rated Movies"
+      : "Trending This Week";
+  const url = `${BASE_URL}${genrePath}?api_key=${process.env.TMDB_API_KEY}&language=en-US`;
 
   // Fetch the data from TMDB
   const res = await fetch(url, { next: { revalidate: 10000 } });
@@ -20,7 +32,7 @@ export default async function Home() {
   // 8. Display a list of movie titles
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Trending This Week</h1>
+      <h1 className="text-2xl font-bold mb-4">{title}</h1>
       {/* Ensure results is an array before mapping */}
       {Array.isArray(results) &&
         results.map((result: any) => (
