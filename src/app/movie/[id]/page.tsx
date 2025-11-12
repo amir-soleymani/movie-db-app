@@ -1,3 +1,6 @@
+import Image from "next/image";
+import React from "react";
+
 const BASE_URL = "https://api.themoviedb.org/3";
 
 export default async function MoviePage({
@@ -14,11 +17,41 @@ export default async function MoviePage({
   }
 
   const movie = await res.json();
+  const imageUrl = "https://image.tmdb.org/t/p/original";
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">{movie.title}</h1>
-      <p className="text-lg">{movie.overview}</p>
+    <div className="w-full">
+      <div className="p-4 md:pt-8 flex flex-col md:flex-row items-center content-center max-w-6xl mx-auto md:space-x-6">
+        {/* Poster Image */}
+        <Image
+          src={`${imageUrl}${movie.backdrop_path || movie.poster_path}`}
+          width={500}
+          height={300}
+          alt="Movie Poster"
+          className="rounded-lg"
+          style={{
+            maxWidth: "100%",
+            height: "100%",
+          }}
+          placeholder="blur"
+          blurDataURL="/spinner.svg"
+        />
+
+        {/* Text Content */}
+        <div className="p-2">
+          <h2 className="text-lg mb-3 font-bold">
+            {movie.title || movie.name}
+          </h2>
+          <p className="text-lg mb-3 pt-2">{movie.overview}</p>
+          <p className="mb-3">
+            <span className="font-semibold mr-1">Rating</span>
+            {movie.vote_count} Votes
+            <span className="ml-2 text-amber-500">
+              ({movie.vote_average.toFixed(1)}/10)
+            </span>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
