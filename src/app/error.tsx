@@ -1,0 +1,24 @@
+"use client";
+
+import { useEffect } from "react";
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    console.error(error);
+  }, [error]);
+
+  return (
+    <div className="text-center mt-10">
+      <h1 className="text-xl">Something went wrong!</h1>
+      <button className="hover:text-amber-600" oneClick={() => reset()}>
+        Try again
+      </button>
+    </div>
+  );
+}
