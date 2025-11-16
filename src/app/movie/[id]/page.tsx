@@ -20,6 +20,16 @@ export default async function MoviePage({
   const movie = await res.json();
   const imageUrl = "https://image.tmdb.org/t/p/original";
 
+  // Fetch trailer video
+  const videoRes = await fetch(
+    `${BASE_URL}/movie/${movieId}/videos?api_key=${process.env.TMDB_API_KEY}&language=en-US`
+  );
+  const videoData = await videoRes.json();
+
+  const trailer = videoData.results?.find(
+    (vid: any) => vid.type === "Trailer" && vid.site === "YouTube"
+  );
+
   const similarRes = await fetch(
     `${BASE_URL}/movie/${movieId}/similar?api_key=${process.env.TMDB_API_KEY}&language=en-US`
   );
@@ -75,6 +85,22 @@ export default async function MoviePage({
           </p>
         </div>
       </div>
+      {/* Trailer Section */}
+      {trailer && (
+        <div className="mt-10 max-w-4xl mx-auto">
+          <h2 className="text-2xl font-bold mb-4">Trailer</h2>
+
+          <div className="aspect-video w-full">
+            <iframe
+              src={`https://www.youtube.com/embed/${trailer.key}`}
+              title="Movie Trailer"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full rounded-lg"
+            ></iframe>
+          </div>
+        </div>
+      )}
       {/* Similar Movies Section */}
       {similarMovies.length > 0 && (
         <div className="mt-10 max-w-6xl mx-auto">
