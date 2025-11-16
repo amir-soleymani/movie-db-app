@@ -76,7 +76,7 @@ export default async function MoviePage({
             {movie.genres.map((genre: any) => (
               <span
                 key={genre.id}
-                className="bg-gray-700 px-3 py-1 rounded-full text-sm"
+                className="px-3 py-1 rounded-full text-sm bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
               >
                 {genre.name}
               </span>
@@ -102,7 +102,7 @@ export default async function MoviePage({
             {cast.slice(0, 10).map((actor: any) => (
               <div
                 key={actor.cast_id}
-                className="bg-gray-800 rounded-lg p-3 flex flex-col items-center:"
+                className="bg-gray-100:0 dark:bg-gray-800 rounded-lg p-3 flex flex-col items-center:"
               >
                 <div className="w-32 h-32 relative bg-black rounded-full overflow-hidden">
                   {actor.profile_path ? (
@@ -113,12 +113,17 @@ export default async function MoviePage({
                       className="object-cover"
                     />
                   ) : (
-                    <span className="text-sm text-gray-400">No Image</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      No Image
+                    </span>
                   )}
                 </div>
 
-                <p className="mt-3 font-semibold text-center"> {actor.name}</p>
-                <p className="text-sm text-gray-400 text-center">
+                <p className="mt-3 font-semibold text-center text-gray-900 dark:text-white">
+                  {" "}
+                  {actor.name}
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
                   as {actor.character}
                 </p>
               </div>
