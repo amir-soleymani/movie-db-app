@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-interface CarProps {
+interface CardProps {
   result: any; //improve later
 }
 

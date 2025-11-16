@@ -16,7 +16,7 @@ export default function Error({
   return (
     <div className="text-center mt-10">
       <h1 className="text-xl">Something went wrong!</h1>
-      <button className="hover:text-amber-600" oneClick={() => reset()}>
+      <button className="hover:text-amber-600" onClick={() => reset()}>
         Try again
       </button>
     </div>
