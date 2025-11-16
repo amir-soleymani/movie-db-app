@@ -32,6 +32,14 @@ export default function Header() {
         <div className="flex flex-col items-center group cursor-pointer w-12 sm:w-20 hover:text-white">
           <DarkModeSwitch />
         </div>
+        <form action="/search">
+          <input
+            name="query"
+            placeholder="Search..."
+            className="px-3 py-1 w-32 sm:w-48 rounded-md text-black"
+            autoComplete="off"
+          />
+        </form>
         <span className="text-2xl font-bold bg-amber-500 p-1 rounded-lg">
           IMDb
         </span>
