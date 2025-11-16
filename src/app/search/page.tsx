@@ -1,4 +1,5 @@
 import Card from "@/app/components/Card";
+import SkeletonCard from "@/app/components/SkeletonCard";
 
 const API_URL = "https://api.themoviedb.org/3/search/movie";
 
@@ -12,6 +13,10 @@ export default async function SearchPage({
   if (!query) {
     return <h1 className="p-4 text-xl">Type something to search...</h1>;
   }
+
+  const skeletons = Array.from({ length: 10 }).map((_, i) => (
+    <SkeletonCard key={i} />
+  ));
 
   const res = await fetch(
     `${API_URL}?api_key=${process.env.TMDB_API_KEY}&query=${query}`
@@ -30,9 +35,11 @@ export default async function SearchPage({
         </div>
       ) : (
         <div className="sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 max-w-6xl mx-auto py-4">
-          {results.map((result: any) => (
-            <Card key={result.id} result={result} />
-          ))}
+          {results
+            ? results.map((result: any) => (
+                <Card key={result.id} result={result} />
+              ))
+            : skeletons}
         </div>
       )}
     </div>
