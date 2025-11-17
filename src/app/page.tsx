@@ -1,45 +1,20 @@
 // src/app/page.tsx
-import Card from "./components/Card";
-const BASE_URL = "https://api.themoviedb.org/3";
+import MovieList from "./components/MovieList";
 
 export default async function Home({
   searchParams,
 }: {
   searchParams: { genre?: string };
 }) {
-  const genrePath =
-    searchParams.genre === "topRated"
-      ? "/movie/top_rated"
-      : "/trending/all/week";
-  const title =
-    searchParams.genre === "topRated"
-      ? "Top Rated Movies"
-      : "Trending This Week";
-  const url = `${BASE_URL}${genrePath}?api_key=${process.env.TMDB_API_KEY}&language=en-US`;
+  const genre = searchParams.genre || "trending";
 
-  // Fetch the data from TMDB
-  const res = await fetch(url, { next: { revalidate: 10000 } });
-
-  if (!res.ok) {
-    // Log the response status for debugging
-    console.error("Fetch failed with status:", res.status);
-    throw new Error("Failed to fetch data");
-  }
-
-  const data = await res.json();
-  const results = data.results;
-
-  // 8. Display a list of movie titles
   return (
-    <div className="p-4 bg-white dark:bg-gray-800 overflow-hidden">
-      <h1 className="text-2xl font-bold mb-4">{title}</h1>
-      <div className="sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 max-w-6xl mx-auto py-4">
-        {/* Ensuring results is an array before mapping */}
-        {Array.isArray(results) &&
-          results.map((result: any) => (
-            <Card key={result.id} result={result} />
-          ))}
-      </div>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">
+        {genre === "topRated" ? "Top Rated Movies" : "Trending This Week"}
+      </h1>
+
+      <MovieList genre={genre} />
     </div>
   );
 }
