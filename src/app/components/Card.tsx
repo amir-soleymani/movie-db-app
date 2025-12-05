@@ -2,42 +2,73 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 interface CardProps {
   result: any;
 }
 
-async function addFavorite(movie: any) {
-  await fetch("/api/favorite/add", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(movie),
-  });
-}
-
 export default function Card({ result }: CardProps) {
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
   const imageUrl = "https://image.tmdb.org/t/p/original";
   const posterPath = result.backdrop_path ?? result.poster_path;
+
+  const handleAddFavorite = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (isLoading) return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/favorite/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: result.id.toString(),
+          title: result.title || result.name,
+          posterUrl: result.poster_path,
+          overview: result.overview,
+          releaseDate: result.release_date,
+        }),
+      });
+
+      if (response.ok) {
+        const json = await response.json();
+        console.log("add favorite response:", json);
+        setIsFavorited(true);
+        // Dispatch custom event so favorites page can refresh
+        // cross-tab: write a timestamp to localStorage so other tabs receive a storage event
+        try {
+          localStorage.setItem("favorites:lastUpdated", Date.now().toString());
+        } catch (e) {
+          // ignore (e.g., SSR or browser privacy)
+        }
+        window.dispatchEvent(new Event("favoriteAdded"));
+      } else {
+        const text = await response.text();
+        console.error("Failed to add favorite", response.status, text);
+      }
+    } catch (error) {
+      console.error("Error adding favorite:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <article className="group relative cursor-pointer rounded-xl overflow-hidden bg-white dark:bg-night-800 border border-gray-200 dark:border-night-600 shadow-lg shadow-black/10 hover:shadow-2xl hover:shadow-black/40 transform hover:scale-[1.03] transition-all duration-300">
       {/* ❤️ FAVORITE BUTTON */}
       <button
-        className="absolute top-2 right-2 z-30 text-xl"
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-
-          addFavorite({
-            id: result.id.toString(),
-            title: result.title || result.name,
-            posterUrl: result.poster_path,
-            overview: result.overview,
-            releaseDate: result.release_date,
-          });
-        }}
+        className="absolute top-2 right-2 z-30 text-xl transition-transform duration-200 hover:scale-125 disabled:opacity-50"
+        onClick={handleAddFavorite}
+        disabled={isLoading}
+        aria-label="Add to favorites"
+        title={isFavorited ? "Added to favorites" : "Add to favorites"}
       >
-        ❤️
+        {isFavorited || isLoading ? "❤️" : "🤍"}
       </button>
 
       {/* MOVIE LINK*/}

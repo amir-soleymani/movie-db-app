@@ -1,11 +1,11 @@
-// src/components/HeaderItem.tsx
 import Link from "next/link";
 import React from "react";
 
 interface HeaderItemProps {
   title: string;
   Icon: React.ElementType;
-  param: string;
+  param?: string;
+  href?: string;
   cName?: string;
 }
 
@@ -13,11 +13,14 @@ export default function HeaderItem({
   title,
   Icon,
   param,
+  href,
   cName,
 }: HeaderItemProps) {
+  const link = href ?? `/?genre=${param}`;
+
   return (
     <Link
-      href={`/?genre=${param}`}
+      href={link}
       className={`flex flex-col items-center justify-center group cursor-pointer w-14 sm:w-28 hover:text-imdb-500 dark:hover:text-white pt-2 h-full ${
         cName ?? ""
       }`}

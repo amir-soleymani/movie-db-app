@@ -16,7 +16,7 @@ export default function Header() {
   const menuItems = [
     { title: "HOME", Icon: HomeIcon, param: "trending" },
     { title: "TOP RATED", Icon: BoltIcon, param: "topRated" },
-    { title: "FAVORITES", Icon: StarIcon, param: "userFavorites" },
+    { title: "FAVORITES", Icon: StarIcon, href: "/favorite" },
   ];
 
   return (
@@ -26,10 +26,11 @@ export default function Header() {
         <nav className="flex items-center gap-8">
           {menuItems.map((item) => (
             <HeaderItem
-              key={item.param}
+              key={item.param || item.href}
               title={item.title}
               Icon={item.Icon}
               param={item.param}
+              href={item.href}
             />
           ))}
         </nav>
