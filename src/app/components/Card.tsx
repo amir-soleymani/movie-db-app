@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface CardProps {
   result: any;
@@ -11,7 +11,30 @@ interface CardProps {
 export default function Card({ result }: CardProps) {
   const [isFavorited, setIsFavorited] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkFavorite = async () => {
+      try {
+        const res = await fetch(`/api/favorite/check?id=${result.id}`);
+        if (!res.ok) return;
+
+        const data = await res.json();
+        if (isMounted) {
+          setIsFavorited(data.isFavorited);
+        }
+      } catch (err) {
+        console.error("Failed to check favorite status", err);
+      }
+    };
+
+    checkFavorite();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [result.id]);
+
   const imageUrl = "https://image.tmdb.org/t/p/original";
   const posterPath = result.backdrop_path ?? result.poster_path;
 
